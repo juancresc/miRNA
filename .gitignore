@@ -1,0 +1,12 @@
+.RHistory
+*.pyc
+trash
+venv
+.vscode
+.ipynb_checkpoints
+__pycache__
+data/*
+data
+docs/
+data
+scripts

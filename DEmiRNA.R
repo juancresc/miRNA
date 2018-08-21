@@ -16,9 +16,9 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 getwd()
 
 # Load data
-countdata <- read.table("data/files/valid_counts.csv",header=TRUE)
+countdata <- read.table("data/21dpi_iwgsc/valid_counts.csv",header=TRUE)
 #countdata <- read.table("data/files/counts.clean.txt",header=TRUE)
-result_path <- "data/files/"
+result_path <- "data/21dpi_iwgsc/"
 result_file = paste(result_path,"/diffexpr-results.",alpha,".csv",sep="");
 #DROP unique miRNA clusters
 countdata <- countdata[!is.na(countdata$Name),]

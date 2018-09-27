@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/scripts/TargetFinder" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/scripts/TargetFinder/fasta36" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/trash/scripts/TargetFinder" vcs="Git" />
+  </component>
+</project>

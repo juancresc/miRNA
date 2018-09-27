@@ -10,3 +10,5 @@ data
 docs/
 data
 scripts
+.DS_Store
+.idea/

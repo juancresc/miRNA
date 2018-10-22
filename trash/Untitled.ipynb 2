@@ -1,0 +1,432 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "genes_de_file = 'data/DEGs_by_RNAseq_21dpi_wheat.txt'\n",
+    "df_genes_de = pd.read_csv(genes_de_file,sep='\\t')\n",
+    "genes_file = 'data/cross/genes.gff'\n",
+    "df_genes = pd.read_csv(genes_file,sep='\\t', header=None)\n",
+    "df_genes.columns = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_genes['gene'] = df_genes['attribute'].str.split(';').apply(lambda x: x[0]).str.split(':').apply(lambda x: x[1])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_genes_filtered = df_genes[df_genes.gene.isin(df_genes_de.Gene.tolist())]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>seqname</th>\n",
+       "      <th>source</th>\n",
+       "      <th>feature</th>\n",
+       "      <th>start</th>\n",
+       "      <th>end</th>\n",
+       "      <th>score</th>\n",
+       "      <th>strand</th>\n",
+       "      <th>frame</th>\n",
+       "      <th>attribute</th>\n",
+       "      <th>gene</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>130</th>\n",
+       "      <td>TGACv1_scaffold_000008_1AL</td>\n",
+       "      <td>ensembl</td>\n",
+       "      <td>gene</td>\n",
+       "      <td>271026</td>\n",
+       "      <td>275600</td>\n",
+       "      <td>.</td>\n",
+       "      <td>+</td>\n",
+       "      <td>.</td>\n",
+       "      <td>ID=gene:TRIAE_CS42_1AL_TGACv1_000008_AA0000260...</td>\n",
+       "      <td>TRIAE_CS42_1AL_TGACv1_000008_AA0000260</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                        seqname   source feature   start     end score strand  \\\n",
+       "130  TGACv1_scaffold_000008_1AL  ensembl    gene  271026  275600     .      +   \n",
+       "\n",
+       "    frame                                          attribute  \\\n",
+       "130     .  ID=gene:TRIAE_CS42_1AL_TGACv1_000008_AA0000260...   \n",
+       "\n",
+       "                                       gene  \n",
+       "130  TRIAE_CS42_1AL_TGACv1_000008_AA0000260  "
+      ]
+     },
+     "execution_count": 33,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_genes_filtered.head(1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Total DE:  43\n"
+     ]
+    }
+   ],
+   "source": [
+    "#srna DE annotation\n",
+    "de_file = 'data/files/diffexpr-results.0.05.csv'\n",
+    "df_de_clus = pd.read_csv(de_file,sep=\",\")\n",
+    "print('Total DE: ',len(df_de_clus.index))\n",
+    "\n",
+    "srna_file = 'data/21dpi_tgac/ShortStack_D.gff3'\n",
+    "df_srna = pd.read_csv(srna_file,sep=\"\\t\",header=None)\n",
+    "df_srna.columns = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']\n",
+    "df_srna['cluster'] = df_srna['attribute'].str.split(';').apply(lambda x: x[0]).str.split('=').apply(lambda x: x[1])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Unnamed: 0</th>\n",
+       "      <th>Gene</th>\n",
+       "      <th>baseMean</th>\n",
+       "      <th>log2FoldChange</th>\n",
+       "      <th>lfcSE</th>\n",
+       "      <th>stat</th>\n",
+       "      <th>pvalue</th>\n",
+       "      <th>padj</th>\n",
+       "      <th>X21dpiR1C.trimmed</th>\n",
+       "      <th>X21dpiR1T.trimmed</th>\n",
+       "      <th>X21dpiR3C.trimmed</th>\n",
+       "      <th>X21dpiR3T.trimmed</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1</td>\n",
+       "      <td>Cluster_17414</td>\n",
+       "      <td>210.52003</td>\n",
+       "      <td>3.983196</td>\n",
+       "      <td>0.244065</td>\n",
+       "      <td>16.320213</td>\n",
+       "      <td>7.088759e-60</td>\n",
+       "      <td>2.044752e-55</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>493.511241</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>348.568877</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   Unnamed: 0           Gene   baseMean  log2FoldChange     lfcSE       stat  \\\n",
+       "0           1  Cluster_17414  210.52003        3.983196  0.244065  16.320213   \n",
+       "\n",
+       "         pvalue          padj  X21dpiR1C.trimmed  X21dpiR1T.trimmed  \\\n",
+       "0  7.088759e-60  2.044752e-55                0.0         493.511241   \n",
+       "\n",
+       "   X21dpiR3C.trimmed  X21dpiR3T.trimmed  \n",
+       "0                0.0         348.568877  "
+      ]
+     },
+     "execution_count": 38,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_de_clus.head(1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_srna = df_srna[df_srna.cluster.isin(df_de_clus.Gene.tolist())]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>seqname</th>\n",
+       "      <th>source</th>\n",
+       "      <th>feature</th>\n",
+       "      <th>start</th>\n",
+       "      <th>end</th>\n",
+       "      <th>score</th>\n",
+       "      <th>strand</th>\n",
+       "      <th>frame</th>\n",
+       "      <th>attribute</th>\n",
+       "      <th>cluster</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>691</th>\n",
+       "      <td>TGACv1_scaffold_288164_4AL</td>\n",
+       "      <td>ShortStack</td>\n",
+       "      <td>nc_RNA</td>\n",
+       "      <td>21797</td>\n",
+       "      <td>21819</td>\n",
+       "      <td>.</td>\n",
+       "      <td>+</td>\n",
+       "      <td>.</td>\n",
+       "      <td>ID=Cluster_1056;DicerCall=21;MIRNA=N;</td>\n",
+       "      <td>Cluster_1056</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                        seqname      source feature  start    end score  \\\n",
+       "691  TGACv1_scaffold_288164_4AL  ShortStack  nc_RNA  21797  21819     .   \n",
+       "\n",
+       "    strand frame                              attribute       cluster  \n",
+       "691      +     .  ID=Cluster_1056;DicerCall=21;MIRNA=N;  Cluster_1056  "
+      ]
+     },
+     "execution_count": 42,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_srna.head(1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>seqname</th>\n",
+       "      <th>source</th>\n",
+       "      <th>feature</th>\n",
+       "      <th>start</th>\n",
+       "      <th>end</th>\n",
+       "      <th>score</th>\n",
+       "      <th>strand</th>\n",
+       "      <th>frame</th>\n",
+       "      <th>attribute</th>\n",
+       "      <th>cluster</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>743</th>\n",
+       "      <td>TGACv1_scaffold_327870_4BS</td>\n",
+       "      <td>ShortStack</td>\n",
+       "      <td>nc_RNA</td>\n",
+       "      <td>291350</td>\n",
+       "      <td>292053</td>\n",
+       "      <td>.</td>\n",
+       "      <td>.</td>\n",
+       "      <td>.</td>\n",
+       "      <td>ID=Cluster_1119;DicerCall=21;MIRNA=N;</td>\n",
+       "      <td>Cluster_1119</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>26631</th>\n",
+       "      <td>TGACv1_scaffold_115069_2AS</td>\n",
+       "      <td>ShortStack</td>\n",
+       "      <td>nc_RNA</td>\n",
+       "      <td>7385</td>\n",
+       "      <td>8184</td>\n",
+       "      <td>.</td>\n",
+       "      <td>.</td>\n",
+       "      <td>.</td>\n",
+       "      <td>ID=Cluster_34660;DicerCall=21;MIRNA=N;</td>\n",
+       "      <td>Cluster_34660</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                          seqname      source feature   start     end score  \\\n",
+       "743    TGACv1_scaffold_327870_4BS  ShortStack  nc_RNA  291350  292053     .   \n",
+       "26631  TGACv1_scaffold_115069_2AS  ShortStack  nc_RNA    7385    8184     .   \n",
+       "\n",
+       "      strand frame                               attribute        cluster  \n",
+       "743        .     .   ID=Cluster_1119;DicerCall=21;MIRNA=N;   Cluster_1119  \n",
+       "26631      .     .  ID=Cluster_34660;DicerCall=21;MIRNA=N;  Cluster_34660  "
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_srna[df_srna.seqname.isin(df_genes_filtered.seqname.tolist())]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_genes_filtered.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

@@ -1,0 +1,1 @@
+./STAR --runThreadN 6 --runMode genomeGenerate --genomeDir /home/juan/Desktop/juan/bio/data/index/star --genomeFastaFiles /home/juan/Desktop/juan/bio/data/genomes/iwgsc_refseqv1.0_all_chromosomes/161010_Chinese_Spring_v1.0_pseudomolecules.fasta --sjdbGTFfile /home/juan/Desktop/juan/bio/data/annotations/iwgsc_refseqv1.1_genes_2017July06/IWGSC_v1.1_HC_20170706.gtf --sjdbOverhang 49

@@ -1,6 +1,5 @@
 .RHistory
 *.pyc
-trash
 venv
 res/
 .vscode
